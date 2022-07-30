@@ -24,7 +24,7 @@ spec:
       type: LoadBalancer
       port: 53
       externalTrafficPolicy: Local
-      loadBalancerIP: ${SVC_PIHOLE_APP}
+      loadBalancerIP: ${SVC_PIHOLE_ADDR}
       annotations:
         metallb.universe.tf/allow-shared-ip: pihole-svc
     serviceDhcp:
