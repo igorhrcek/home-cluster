@@ -1,0 +1,53 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: pihole
+  namespace: networking
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: pihole
+      version: 2.9.0
+      sourceRef:
+        name: pihole-chart
+        kind: HelmRepository
+        namespace: flux-system
+  values:
+    virtualHost: pihole.${SECRET_DOMAIN}
+    serviceDns:
+      type: LoadBalanser
+      port: 53
+      loadBalancerIP: ${SVC_PIHOLE_ADDR}
+      annotations:
+        metallb.universe.tf/allow-shared-ip: pihole-svc
+    serviceDhcp:
+      enabled: false
+    serviceWeb:
+      http:
+        enabled: true
+        port: 80
+      https:
+        enabled: true
+        port: 443
+      type: ClusterIp
+    ftl:
+      BLOCK_ICLOUD_PR: false
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-staging"
+        hosts:
+          - host: "pihole.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "pihole.${SECRET_DOMAIN}"
+    persistentVolumeClaim:
+      enabled: true
+      existingClaim: pihole-pvc
