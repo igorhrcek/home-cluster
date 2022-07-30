@@ -11,15 +11,20 @@ spec:
       chart: pihole
       version: 2.9.0
       sourceRef:
-        name: pihole-chart
         kind: HelmRepository
+        name: pihole-chart
         namespace: flux-system
   values:
-    virtualHost: pihole.${SECRET_DOMAIN}
+    dnsPolicy: ClusterFirstWithHostNet
+    virtualHost: "pihole.${SECRET_DOMAIN}"
+    image:
+      repository: pihole/pihole
+      tag: 2022.07
     serviceDns:
       type: LoadBalancer
       port: 53
-      loadBalancerIP: ${SVC_PIHOLE_ADDR}
+      externalTrafficPolicy: Local
+      loadBalancerIP: ${SVC_PIHOLE_APP}
       annotations:
         metallb.universe.tf/allow-shared-ip: pihole-svc
     serviceDhcp:
@@ -32,23 +37,20 @@ spec:
         enabled: true
         port: 443
       type: ClusterIP
+      externalTrafficPolicy: Local
     ftl:
       BLOCK_ICLOUD_PR: false
     ingress:
-      main:
-        enabled: true
-        ingressClassName: "nginx"
-        annotations:
-          cert-manager.io/cluster-issuer: "letsencrypt-staging"
-        hosts:
-          - host: "pihole.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - hosts:
-              - "pihole.${SECRET_DOMAIN}"
-            secretName: "pihole-tls"
+      enabled: true
+      ingressClassName: "nginx"
+      annotations:
+        cert-manager.io/cluster-issuer: "letsencrypt-staging"
+      path: /
+      hosts:
+        - "pihole.${SECRET_DOMAIN}"
+      tls:
+        - hosts:
+            - "pihole.${SECRET_DOMAIN}"
     persistentVolumeClaim:
       enabled: true
       existingClaim: pihole-pvc
