@@ -31,7 +31,7 @@ spec:
       https:
         enabled: true
         port: 443
-      type: ClusterIp
+      type: ClusterIP
     ftl:
       BLOCK_ICLOUD_PR: false
     ingress:
