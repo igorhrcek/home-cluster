@@ -31,13 +31,15 @@ spec:
       https:
         enabled: true
         port: 443
-      type: ClusterIP
+      type: LoadBalancer
+      loadBalancerIP: 10.10.10.206
     ftl:
       BLOCK_ICLOUD_PR: false
     ingress:
       main:
         enabled: true
-        ingressClassName: "nginx"
+        ingressClassName: "pihole"
+        nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
         annotations:
           cert-manager.io/cluster-issuer: "letsencrypt-staging"
         hosts:
