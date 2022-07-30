@@ -42,7 +42,7 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: "letsencrypt-staging"
         hosts:
-          - host: "pihole.${SECRET_DOMAIN}"
+          - "pihole.${SECRET_DOMAIN}"
         tls:
           - hosts:
               - "pihole.${SECRET_DOMAIN}"
