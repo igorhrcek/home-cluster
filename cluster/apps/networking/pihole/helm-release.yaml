@@ -17,7 +17,7 @@ spec:
   values:
     virtualHost: pihole.${SECRET_DOMAIN}
     serviceDns:
-      type: LoadBalanser
+      type: LoadBalancer
       port: 53
       loadBalancerIP: ${SVC_PIHOLE_ADDR}
       annotations:
