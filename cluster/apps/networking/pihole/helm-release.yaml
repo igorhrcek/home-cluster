@@ -31,8 +31,7 @@ spec:
       https:
         enabled: true
         port: 443
-      type: LoadBalancer
-      loadBalancerIP: 10.10.10.206
+      type: ClusterIP
     ftl:
       BLOCK_ICLOUD_PR: false
     ingress:
